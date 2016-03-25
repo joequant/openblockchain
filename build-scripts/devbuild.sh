@@ -1,6 +1,6 @@
 #!/bin/bash
-go get github.com/joequant/bitquant/openblockchain/examples/map
-cd $GOPATH/src/github.com/joequant/bitquant/openblockchain/examples/map
+go get github.com/joequant/openblockchain/examples/map
+cd $GOPATH/src/github.com/joequant/openblockchain/examples/map
 go build
 cd $GOPATH/src/github.com/openblockchain/obc-peer
 go build
