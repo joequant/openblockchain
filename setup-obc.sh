@@ -1,5 +1,8 @@
 #!/bin/bash
 . env.sh
+VBoxManage controlvm openchain poweroff
+VBoxManage unregistervm openchain --delete
+
 mkdir -p $GOPATH/src/github.com/openblockchain
 pushd $GOPATH/src/github.com/openblockchain > /dev/null
 git clone http://github.com/joequant/obc-peer.git
