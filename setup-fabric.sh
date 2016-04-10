@@ -15,3 +15,4 @@ popd > /dev/null
 pushd  $GOPATH/src/github.com/hyperledger/fabric/devenv > /dev/null
 vagrant up
 popd > /dev/null
+$SCRIPT_DIR/run-script.sh build-scripts/devbuild.sh
