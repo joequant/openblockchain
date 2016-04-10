@@ -2,8 +2,8 @@
 cd $GOPATH/src/github.com/hyperledger/fabric
 go build -o peer
 
-cd $GOPATH/src/github.com/hyperledger/fabric/core/container
-go test -run BuildImage_Peer
+go test github.com/hyperledger/fabric/core/container -run=BuildImage_Peer
+go test github.com/hyperledger/fabric/core/container -run=BuildImage_Obcca
 
 cd ~
 export TARFILE=go-ipfs_v0.3.11_linux-amd64.tar.gz
