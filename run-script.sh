@@ -1,5 +1,5 @@
 #!/bin/bash
 . env.sh
-pushd obc-dev-env > /dev/null
-vagrant ssh -c /openchain/build-scripts/$1
-popd > /dev/null
+cd golang/src/github.com/hyperledger/fabric/devenv
+vagrant ssh -c /local-dev/$1
+

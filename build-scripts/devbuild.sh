@@ -2,10 +2,7 @@
 go get github.com/joequant/openblockchain/examples/map
 cd $GOPATH/src/github.com/joequant/openblockchain/examples/map
 go build
-cd $GOPATH/src/github.com/openblockchain/obc-peer
-go build
-cd $GOPATH/src/github.com/openblockchain/obc-peer/openchain/container
-go get .
+cd /hyperledger/core/container
 go test -run BuildImage_Peer -timeout 99999s
 
 cd ~
