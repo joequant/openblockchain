@@ -1,0 +1,58 @@
+diff --git a/core/container/controller.go b/core/container/controller.go
+index 1a997cf..b0845ae 100755
+--- a/core/container/controller.go
++++ b/core/container/controller.go
+@@ -82,34 +82,35 @@ func (vm *dockerVM) build(ctxt context.Context, id string, args []string, env []
+ 	default:
+ 		return fmt.Errorf("Error creating docker client: %s", err)
+ 	}
+-	return nil
++	containerID := strings.Replace(id, ":", "_", -1)
++	return vm.createContainer(ctxt, client, id, containerID, args, env, attachstdin, attachstdout)
+ }
+ 
+-func (vm *dockerVM) start(ctxt context.Context, imageID string, args []string, env []string, attachstdin bool, attachstdout bool) error {
++func (vm *dockerVM) start(ctxt context.Context, id string, args []string, env []string, attachstdin bool, attachstdout bool) error {
+ 	client, err := vm.newClient()
+ 	if err != nil {
+ 		vmLogger.Debug("start - cannot create client %s", err)
+ 		return err
+ 	}
+-
+-	containerID := strings.Replace(imageID, ":", "_", -1)
+-
+-	//stop,force remove if necessary
+-	vmLogger.Debug("Cleanup container %s", containerID)
+-	vm.stopInternal(ctxt, client, containerID, 0, false, false)
+-
+-	vmLogger.Debug("Start container %s", containerID)
+-	err = vm.createContainer(ctxt, client, imageID, containerID, args, env, attachstdin, attachstdout)
+-	if err != nil {
+-		vmLogger.Error(fmt.Sprintf("start-could not recreate container %s", err))
+-		return err
+-	}
++	containerID := strings.Replace(id, ":", "_", -1)
+ 	err = client.StartContainer(containerID, &docker.HostConfig{NetworkMode: "host"})
+ 	if err != nil {
+-		vmLogger.Error(fmt.Sprintf("start-could not start container %s", err))
+-		return err
++		errMsg := "start"
++		if nscErr, ok := err.(*docker.NoSuchContainer); ok && nscErr != nil {
++			errMsg = "restart"
++			vmLogger.Debug("start-container does not exist, attempting to create %s", err)
++			err = vm.createContainer(ctxt, client, id, containerID, args, env, attachstdin, attachstdout)
++			if err != nil {
++				vmLogger.Debug("start-could not recreate container %s", err)
++				return err
++			}
++			err = client.StartContainer(containerID, &docker.HostConfig{NetworkMode: "host"})
++		}
++		if err != nil {
++			vmLogger.Debug("start-could not %s container %s", errMsg, err)
++			return err
++		}
+ 	}
+-
+ 	vmLogger.Debug("Started container %s", containerID)
+ 	return nil
+ }

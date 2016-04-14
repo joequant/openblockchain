@@ -1,16 +1,25 @@
 #!/bin/bash
 . env.sh
-pushd  $GOPATH/src/github.com/hyperledger/fabric/devenv > /dev/null
-vagrant destroy -f
-popd > /dev/null
+if [ -d $GOPATH/src/github.com/hyperledger/fabric/devenv ] ; then
+    pushd  $GOPATH/src/github.com/hyperledger/fabric/devenv > /dev/null
+    vagrant destroy -f
+    popd > /dev/null
+fi
 
 mkdir -p $GOPATH/src/github.com/hyperledger
 pushd $GOPATH/src/github.com/hyperledger > /dev/null
-git clone http://github.com/joequant/fabric.git
+if [ ! -d fabric ] ; then
+    git clone http://github.com/joequant/fabric.git
+fi
 pushd fabric > /dev/null
-git pull
+    git checkout .
 popd > /dev/null
 popd > /dev/null
+if [ -f $SCRIPT_DIR/fixes.patch ] ; then
+    pushd $GOPATH/src/github.com/hyperledger/fabric > /dev/null
+    patch -p1 < $SCRIPT_DIR/workaround.patch
+    popd > /dev/null
+fi
 
 
 pushd  $GOPATH/src/github.com/hyperledger/fabric/devenv > /dev/null
