@@ -15,7 +15,7 @@ pushd fabric > /dev/null
     git checkout .
 popd > /dev/null
 popd > /dev/null
-if [ -f $SCRIPT_DIR/fixes.patch ] ; then
+if [ -f $SCRIPT_DIR/workaround.patch ] ; then
     pushd $GOPATH/src/github.com/hyperledger/fabric > /dev/null
     patch -p1 < $SCRIPT_DIR/workaround.patch
     popd > /dev/null
